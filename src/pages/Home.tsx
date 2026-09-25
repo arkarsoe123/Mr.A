@@ -1,7 +1,6 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Check, ChevronDown, Headphones, Keyboard, MessageCircle, Mic2, MoreHorizontal, PanelLeft, Send, Settings2, Sparkles, UserRound, Volume2, Waves, X, Zap } from "lucide-react";
-
-const characterImage = "/Mr.A/mr-a-reference-character.png";
+import CharacterRig from "../components/CharacterRig";
 const quickPrompts = ["မိတ်ဆက်ပေးပါ", "ဒီနေ့ ဘာလုပ်ရမလဲ?", "Website အကြောင်းပြောပါ"];
 const starterMessages = [
   { from: "ai", text: "မင်္ဂလာပါ။ ကျွန်တော်က Mr.A ပါ။ ဒီနေ့ ဘာကူညီပေးရမလဲ?" },
@@ -44,7 +43,7 @@ export default function Home() {
       <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="sidebar-brand"><span className="mr-mark">Mr.<b>A</b></span><span className="brand-sub">AI VIRTUAL CHARACTER</span></div>
         <button className="sidebar-close" onClick={() => setSidebarOpen(false)} aria-label="Close menu"><X size={17} /></button>
-        <div className="character-mini"><div className="mini-avatar"><img src={characterImage} alt="Mr.A character" /></div><div><strong>Mr.A</strong><span><i /> online now</span></div></div>
+        <div className="character-mini"><div className="mini-avatar"><CharacterRig compact motionOn={motionOn} speaking={speaking} speechBeat={speechBeat} /></div><div><strong>Mr.A</strong><span><i /> online now</span></div></div>
         <nav className="main-nav" aria-label="Character modes">
           {[{ label: "Talk", icon: Mic2 }, { label: "Listen", icon: Headphones }, { label: "Chat", icon: MessageCircle }, { label: "Support", icon: Zap }].map(({ label, icon: Icon }) => <button key={label} className={activeNav === label ? "active" : ""} onClick={() => { setActiveNav(label); setSidebarOpen(false); }}><Icon size={18} /><span>{label}</span>{activeNav === label && <span className="nav-pip" />}</button>)}
         </nav>
@@ -58,7 +57,7 @@ export default function Home() {
         <div className="workspace-grid">
           <section className="character-column">
             <div className="character-heading"><div><span className="section-kicker">YOUR AI COMPANION</span><h1>မင်္ဂလာပါ၊ <em>ကျွန်တော် Mr.A ပါ။</em></h1><p>သင်နဲ့ စကားပြောဖို့ အဆင်သင့်ဖြစ်နေပါတယ်။</p></div><span className="mode-badge"><Waves size={13} /> {activeNav} mode</span></div>
-            <div className={`portrait-stage ${motionOn ? "moving" : "still"} ${speaking ? "speaking" : ""} ${speechBeat ? "speech-beat" : ""}`}><div className="stage-grid" /><div className="portrait-orbit orbit-a" /><div className="portrait-orbit orbit-b" /><div className="portrait-label label-top"><span className="live-dot" /> {speaking ? "LIP-SYNC ACTIVE" : "online / ready"}</div><img src={characterImage} alt="Mr.A AI virtual character from the provided reference" /><span className="lip-sync-mouth" aria-hidden="true"><span /></span><div className="portrait-copy"><span className="script-burmese">မင်္ဂလာပါ</span><small>YOUR PERSONAL AI COMPANION</small></div><div className="voice-bars" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div></div>
+            <div className={`portrait-stage ${motionOn ? "moving" : "still"} ${speaking ? "speaking" : ""} ${speechBeat ? "speech-beat" : ""}`}><div className="stage-grid" /><div className="portrait-orbit orbit-a" /><div className="portrait-orbit orbit-b" /><div className="portrait-label label-top"><span className="live-dot" /> {speaking ? "LIP-SYNC ACTIVE" : "SVG RIG / READY"}</div><CharacterRig motionOn={motionOn} speaking={speaking} speechBeat={speechBeat} onTap={() => setActiveNav("Talk")} /><div className="portrait-copy"><span className="script-burmese">မင်္ဂလာပါ</span><small>CODE-ANIMATED AI COMPANION</small></div><div className="voice-bars" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div></div>
             <div className="portrait-controls"><button className={motionOn ? "selected" : ""} onClick={() => setMotionOn(!motionOn)}><Sparkles size={15} /> {motionOn ? "Natural motion" : "Motion paused"}</button><button className={speaking ? "selected" : ""} onClick={() => speak()}><Volume2 size={15} /> {speaking ? "Speaking..." : "Voice preview"}</button><button onClick={() => setActiveNav("Talk")}><Mic2 size={15} /> Talk to Mr.A</button></div>
           </section>
 
