@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+type Expression = "neutral" | "smile" | "curious" | "surprised" | "thinking";
+type Gesture = "idle" | "wave" | "point" | "think";
 
 type CharacterRigProps = {
   speaking?: boolean;
@@ -10,17 +13,41 @@ type CharacterRigProps = {
 
 export default function CharacterRig({ speaking = false, speechBeat = false, motionOn = true, compact = false, onTap }: CharacterRigProps) {
   const [tapPulse, setTapPulse] = useState(false);
-  const mouthOpen = speaking ? (speechBeat ? 0.92 : 0.42) : 0.08;
+  const [expression, setExpression] = useState<Expression>("neutral");
+  const [gesture, setGesture] = useState<Gesture>("idle");
+  const mouthOpen = speaking ? (speechBeat ? 0.92 : 0.42) : expression === "surprised" ? 0.42 : expression === "smile" ? 0.2 : 0.08;
+
+  useEffect(() => {
+    if (!motionOn || speaking) return;
+    const expressions: Expression[] = ["neutral", "curious", "smile", "thinking"];
+    const gestures: Gesture[] = ["idle", "wave", "point", "think"];
+    let index = 0;
+    const cycle = window.setInterval(() => {
+      index = (index + 1) % expressions.length;
+      setExpression(expressions[index]);
+      setGesture(gestures[index]);
+    }, 4200);
+    return () => window.clearInterval(cycle);
+  }, [motionOn, speaking]);
+
+  useEffect(() => {
+    if (speaking) {
+      setExpression("smile");
+      setGesture("point");
+    }
+  }, [speaking]);
 
   const handleTap = () => {
     setTapPulse(true);
+    setExpression("surprised");
+    setGesture("wave");
     onTap?.();
-    window.setTimeout(() => setTapPulse(false), 480);
+    window.setTimeout(() => { setTapPulse(false); setExpression("smile"); }, 620);
   };
 
   return (
     <div
-      className={`rig-frame ${compact ? "compact" : ""} ${motionOn ? "rig-motion" : "rig-still"} ${speaking ? "rig-speaking" : ""} ${tapPulse ? "rig-tap" : ""}`}
+      className={`rig-frame ${compact ? "compact" : ""} ${motionOn ? "rig-motion" : "rig-still"} ${speaking ? "rig-speaking" : ""} ${tapPulse ? "rig-tap" : ""} expression-${expression} gesture-${gesture}`}
       role="button"
       tabIndex={0}
       aria-label="Tap Mr.A character"
@@ -63,6 +90,7 @@ export default function CharacterRig({ speaking = false, speechBeat = false, mot
           <path className="rig-logo" d="M283 532h35" stroke="#58bdf4" strokeWidth="3" strokeLinecap="round" /><text x="287" y="526" fill="#e6f5ff" fontSize="17" fontWeight="800">Mr.<tspan fill="#4eb8f2">A</tspan></text>
         </g>
       </svg>
+      <span className="rig-expression-chip">{speaking ? "happy · talking" : `${expression} · ${gesture}`}</span>
       {speaking && <span className="rig-speech-chip"><i /> talking</span>}
     </div>
   );
