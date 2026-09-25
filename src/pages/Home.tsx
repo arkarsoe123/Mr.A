@@ -17,11 +17,21 @@ export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const currentMessage = useMemo(() => messages[messages.length - 1], [messages]);
 
+  useEffect(() => {
+    if (!speaking) return;
+    const beatTimer = window.setInterval(() => setSpeechBeat((beat) => !beat), 145);
+    return () => window.clearInterval(beatTimer);
+  }, [speaking]);
+
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
 
-  const speak = (text = currentMessage?.text ?? "မင်္ဂလာပါ။") => {
-    if (!("speechSynthesis" in window)) return;
-    if (speaking) { window.speechSynthesis.cancel(); setSpeaking(false); return; }
+  const speak = (text = currentMessage?.text ?? "မင်္ဂလာပါ။", force = false) => {
+    if (!("speechSynthesis" in window)) {
+      setSpeaking(true);
+      globalThis.setTimeout(() => { setSpeaking(false); setSpeechBeat(false); }, Math.max(1200, text.length * 105));
+      return;
+    }
+    if (speaking && !force) { window.speechSynthesis.cancel(); setSpeaking(false); setSpeechBeat(false); return; }
     const voice = new SpeechSynthesisUtterance(text);
     voice.lang = "my-MM"; voice.rate = 0.9; voice.pitch = 1;
     voice.onstart = () => setSpeaking(true); voice.onboundary = () => setSpeechBeat((beat) => !beat); voice.onend = () => { setSpeaking(false); setSpeechBeat(false); }; voice.onerror = () => { setSpeaking(false); setSpeechBeat(false); };
@@ -32,8 +42,11 @@ export default function Home() {
     event?.preventDefault();
     const value = draft.trim();
     if (!value) return;
-    setMessages((items) => [...items, { from: "user", text: value }, { from: "ai", text: "နားလည်ပါပြီ။ ဒီအကြောင်းကို နောက်ထပ်အသေးစိတ် ကူညီပေးဖို့ အဆင်သင့်ပါ။" }]);
+    const reply = "နားလည်ပါပြီ။ ဒီအကြောင်းကို နောက်ထပ်အသေးစိတ် ကူညီပေးဖို့ အဆင်သင့်ပါ။";
+    setMessages((items) => [...items, { from: "user", text: value }, { from: "ai", text: reply }]);
     setDraft("");
+    // Speak the new reply immediately from the form-submit gesture so the browser allows audio.
+    speak(reply, true);
   };
 
   const selectPrompt = (prompt: string) => { setDraft(prompt); setTimeout(() => document.getElementById("chat-input")?.focus(), 0); };
