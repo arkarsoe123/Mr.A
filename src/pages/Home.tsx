@@ -13,6 +13,7 @@ export default function Home() {
   const [draft, setDraft] = useState("");
   const [motionOn, setMotionOn] = useState(true);
   const [speaking, setSpeaking] = useState(false);
+  const [speechBeat, setSpeechBeat] = useState(false);
   const [activeNav, setActiveNav] = useState("Chat");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const currentMessage = useMemo(() => messages[messages.length - 1], [messages]);
@@ -24,7 +25,7 @@ export default function Home() {
     if (speaking) { window.speechSynthesis.cancel(); setSpeaking(false); return; }
     const voice = new SpeechSynthesisUtterance(text);
     voice.lang = "my-MM"; voice.rate = 0.9; voice.pitch = 1;
-    voice.onstart = () => setSpeaking(true); voice.onend = () => setSpeaking(false); voice.onerror = () => setSpeaking(false);
+    voice.onstart = () => setSpeaking(true); voice.onboundary = () => setSpeechBeat((beat) => !beat); voice.onend = () => { setSpeaking(false); setSpeechBeat(false); }; voice.onerror = () => { setSpeaking(false); setSpeechBeat(false); };
     window.speechSynthesis.cancel(); window.speechSynthesis.speak(voice);
   };
 
@@ -57,7 +58,7 @@ export default function Home() {
         <div className="workspace-grid">
           <section className="character-column">
             <div className="character-heading"><div><span className="section-kicker">YOUR AI COMPANION</span><h1>မင်္ဂလာပါ၊ <em>ကျွန်တော် Mr.A ပါ။</em></h1><p>သင်နဲ့ စကားပြောဖို့ အဆင်သင့်ဖြစ်နေပါတယ်။</p></div><span className="mode-badge"><Waves size={13} /> {activeNav} mode</span></div>
-            <div className={`portrait-stage ${motionOn ? "moving" : "still"} ${speaking ? "speaking" : ""}`}><div className="stage-grid" /><div className="portrait-orbit orbit-a" /><div className="portrait-orbit orbit-b" /><div className="portrait-label label-top"><span className="live-dot" /> online / ready</div><img src={characterImage} alt="မြန်မာဝတ်စုံဝတ်ထားသော Mr.A AI virtual character" /><div className="portrait-copy"><span className="script-burmese">မင်္ဂလာပါ</span><small>YOUR PERSONAL AI COMPANION</small></div><div className="voice-bars" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div></div>
+            <div className={`portrait-stage ${motionOn ? "moving" : "still"} ${speaking ? "speaking" : ""} ${speechBeat ? "speech-beat" : ""}`}><div className="stage-grid" /><div className="portrait-orbit orbit-a" /><div className="portrait-orbit orbit-b" /><div className="portrait-label label-top"><span className="live-dot" /> {speaking ? "LIP-SYNC ACTIVE" : "online / ready"}</div><img src={characterImage} alt="မြန်မာဝတ်စုံဝတ်ထားသော Mr.A AI virtual character" /><span className="lip-sync-mouth" aria-hidden="true"><span /></span><div className="portrait-copy"><span className="script-burmese">မင်္ဂလာပါ</span><small>YOUR PERSONAL AI COMPANION</small></div><div className="voice-bars" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div></div>
             <div className="portrait-controls"><button className={motionOn ? "selected" : ""} onClick={() => setMotionOn(!motionOn)}><Sparkles size={15} /> {motionOn ? "Natural motion" : "Motion paused"}</button><button className={speaking ? "selected" : ""} onClick={() => speak()}><Volume2 size={15} /> {speaking ? "Speaking..." : "Voice preview"}</button><button onClick={() => setActiveNav("Talk")}><Mic2 size={15} /> Talk to Mr.A</button></div>
           </section>
 
