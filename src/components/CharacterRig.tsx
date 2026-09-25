@@ -15,7 +15,7 @@ export default function CharacterRig({ speaking = false, speechBeat = false, mot
   const [tapPulse, setTapPulse] = useState(false);
   const [expression, setExpression] = useState<Expression>("neutral");
   const [gesture, setGesture] = useState<Gesture>("idle");
-  const mouthOpen = speaking ? (speechBeat ? 0.92 : 0.42) : expression === "surprised" ? 0.42 : expression === "smile" ? 0.2 : 0.08;
+  const mouthOpen = speaking ? (speechBeat ? 0.9 : 0.35) : expression === "surprised" ? 0.32 : expression === "smile" ? 0.16 : 0.05;
 
   useEffect(() => {
     if (!motionOn || speaking) return;
@@ -31,10 +31,7 @@ export default function CharacterRig({ speaking = false, speechBeat = false, mot
   }, [motionOn, speaking]);
 
   useEffect(() => {
-    if (speaking) {
-      setExpression("smile");
-      setGesture("point");
-    }
+    if (speaking) { setExpression("smile"); setGesture("point"); }
   }, [speaking]);
 
   const handleTap = () => {
@@ -46,48 +43,51 @@ export default function CharacterRig({ speaking = false, speechBeat = false, mot
   };
 
   return (
-    <div
-      className={`rig-frame ${compact ? "compact" : ""} ${motionOn ? "rig-motion" : "rig-still"} ${speaking ? "rig-speaking" : ""} ${tapPulse ? "rig-tap" : ""} expression-${expression} gesture-${gesture}`}
-      role="button"
-      tabIndex={0}
-      aria-label="Tap Mr.A character"
-      onClick={handleTap}
-      onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") handleTap(); }}
-    >
-      <svg className="character-rig" viewBox="0 0 420 620" role="img" aria-label="Code animated Mr.A virtual character">
+    <div className={`rig-frame ${compact ? "compact" : ""} ${motionOn ? "rig-motion" : "rig-still"} ${speaking ? "rig-speaking" : ""} ${tapPulse ? "rig-tap" : ""} expression-${expression} gesture-${gesture}`} role="button" tabIndex={0} aria-label="Tap Mr.A character" onClick={handleTap} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") handleTap(); }}>
+      <svg className="character-rig semi-realistic-rig" viewBox="0 0 420 620" role="img" aria-label="Semi-realistic code animated Mr.A virtual character">
         <defs>
-          <linearGradient id="rigSkin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ffd8c4" /><stop offset="1" stopColor="#bc786a" /></linearGradient>
-          <linearGradient id="rigHoodie" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#172b45" /><stop offset=".58" stopColor="#081526" /><stop offset="1" stopColor="#020a14" /></linearGradient>
-          <radialGradient id="rigGlow"><stop offset="0" stopColor="#4bbaff" stopOpacity=".28" /><stop offset="1" stopColor="#4bbaff" stopOpacity="0" /></radialGradient>
-          <filter id="rigShadow"><feGaussianBlur stdDeviation="12" /></filter>
+          <linearGradient id="skinBase" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#f8c7b3" /><stop offset=".42" stopColor="#d99480" /><stop offset="1" stopColor="#a65e59" /></linearGradient>
+          <linearGradient id="skinLight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ffe0cf" stopOpacity=".7" /><stop offset="1" stopColor="#c2786c" stopOpacity="0" /></linearGradient>
+          <linearGradient id="jacket" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#263d59" /><stop offset=".45" stopColor="#0c1d32" /><stop offset="1" stopColor="#020914" /></linearGradient>
+          <linearGradient id="hair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#27313c" /><stop offset=".55" stopColor="#0d141d" /><stop offset="1" stopColor="#050a11" /></linearGradient>
+          <radialGradient id="aura"><stop offset="0" stopColor="#73cfff" stopOpacity=".26" /><stop offset="1" stopColor="#73cfff" stopOpacity="0" /></radialGradient>
+          <filter id="softShadow"><feGaussianBlur stdDeviation="11" /></filter>
         </defs>
-        <ellipse className="rig-back-glow" cx="210" cy="250" rx="190" ry="230" fill="url(#rigGlow)" />
-        <ellipse className="rig-shadow" cx="210" cy="586" rx="142" ry="19" filter="url(#rigShadow)" />
+        <ellipse cx="210" cy="258" rx="185" ry="235" fill="url(#aura)" />
+        <ellipse className="rig-shadow" cx="210" cy="595" rx="137" ry="17" filter="url(#softShadow)" />
         <g className="rig-body">
-          <path className="rig-shoulders" d="M54 610c8-115 54-177 121-190h70c68 14 113 77 121 190H54Z" fill="url(#rigHoodie)" />
-          <path className="rig-hood" d="M109 447c23-51 61-77 101-77s78 26 101 77l-33 31c-20-23-43-36-68-36s-48 13-68 36l-33-31Z" fill="#0c1d31" stroke="#33516c" strokeWidth="3" />
-          <path className="rig-shirt" d="m182 440 28 43 28-43 16 170h-88l16-170Z" fill="#dce9ef" />
-          <path className="rig-zip" d="M210 481v128" stroke="#5485a1" strokeWidth="3" opacity=".7" />
-          <path className="rig-arm-left" d="M63 601c8-61 32-109 68-132l29 40c-28 32-37 61-40 92H63Z" fill="#122a43" />
-          <path className="rig-arm-right" d="M357 601c-8-61-32-109-68-132l-29 40c28 32 37 61 40 92h57Z" fill="#122a43" />
-          <path className="rig-neck" d="M177 371h66v82c-21 21-45 21-66 0v-82Z" fill="url(#rigSkin)" />
+          <path className="rig-shoulders" d="M51 610c10-99 49-158 117-183 26-10 58-10 84 0 68 25 107 84 117 183H51Z" fill="url(#jacket)" stroke="#314d68" strokeWidth="2" />
+          <path className="rig-hood" d="M111 452c21-47 58-75 99-75s78 28 99 75l-31 38c-20-24-43-36-68-36s-48 12-68 36l-31-38Z" fill="#0a1728" stroke="#3b5870" strokeWidth="3" />
+          <path className="rig-shirt" d="M174 430 210 480l36-50 19 180H155l19-180Z" fill="#edf3f3" />
+          <path className="rig-zip" d="M210 479v131" stroke="#628299" strokeWidth="2" opacity=".7" />
+          <path className="rig-arm-left" d="M62 608c7-58 29-103 65-133l35 39c-22 28-36 59-39 94H62Z" fill="#142a43" stroke="#324e67" strokeWidth="2" />
+          <path className="rig-arm-right" d="M358 608c-7-58-29-103-65-133l-35 39c22 28 36 59 39 94h61Z" fill="#10243b" stroke="#324e67" strokeWidth="2" />
+          <path className="rig-neck" d="M176 366h68v92c-19 20-49 20-68 0v-92Z" fill="url(#skinBase)" />
+          <path className="rig-neck-shadow" d="M179 379q31 24 62 0v49q-31 22-62 0Z" fill="#995750" opacity=".23" />
           <g className="rig-head">
-            <path d="M103 170c7-85 54-128 107-128s100 43 107 128v126c-11 80-58 119-107 119s-96-39-107-119V170Z" fill="url(#rigSkin)" stroke="#f7c5b4" strokeWidth="2" />
-            <path className="rig-hair" d="M103 177C82 83 131 19 212 26c76 6 118 69 105 151l-25-21-11-59-20 28-26-34-26 38-34-28-28 43-31-21-13 54-1 0Z" fill="#111a26" />
-            <path className="rig-ear" d="M105 221c-28-17-39 9-27 42 8 21 19 29 34 27M315 221c28-17 39 9 27 42-8 21-19 29-34 27" fill="url(#rigSkin)" stroke="#c48678" strokeWidth="6" />
-            <path className="rig-brow left" d="M137 204q30-19 58 0" fill="none" stroke="#5c3732" strokeWidth="8" strokeLinecap="round" />
-            <path className="rig-brow right" d="M225 204q30-19 58 0" fill="none" stroke="#5c3732" strokeWidth="8" strokeLinecap="round" />
+            <path d="M104 166c4-79 47-127 106-127s102 48 106 127v126c-8 75-51 120-106 120s-98-45-106-120V166Z" fill="url(#skinBase)" stroke="#f6c4b2" strokeWidth="2" />
+            <path d="M114 144c14-62 46-92 96-92s82 30 96 92v79c-11-21-22-35-32-44-23 11-45 16-64 16-25 0-47-6-67-18-12 10-22 25-29 46v-79Z" fill="url(#skinLight)" opacity=".65" />
+            <path className="rig-hair" d="M102 181C83 93 126 21 207 25c73 3 121 59 111 145l-24-19-12-53-18 25-27-35-27 37-33-29-27 43-31-23-12 56-5 9Z" fill="url(#hair)" stroke="#344251" strokeWidth="2" />
+            <path className="rig-hairline" d="M126 169q36-43 82-42t84 42" fill="none" stroke="#79534e" strokeWidth="3" opacity=".35" />
+            <path className="rig-ear" d="M106 219c-25-14-37 10-27 39 7 21 19 32 34 28M314 219c25-14 37 10 27 39-7 21-19 32-34 28" fill="url(#skinBase)" stroke="#ad6861" strokeWidth="6" />
+            <path d="M95 238q14-17 20 4M325 238q-14-17-20 4" fill="none" stroke="#f1ad9c" strokeWidth="3" opacity=".7" />
+            <path className="rig-brow left" d="M137 204q30-15 58 1" fill="none" stroke="#473234" strokeWidth="7" strokeLinecap="round" />
+            <path className="rig-brow right" d="M225 205q30-16 58-1" fill="none" stroke="#473234" strokeWidth="7" strokeLinecap="round" />
+            <path className="rig-eyelid left" d="M146 232q21-17 42 0" fill="none" stroke="#9d5d59" strokeWidth="3" />
+            <path className="rig-eyelid right" d="M232 232q21-17 42 0" fill="none" stroke="#9d5d59" strokeWidth="3" />
             <g className="rig-eyes">
-              <ellipse className="rig-eye left" cx="167" cy="234" rx="18" ry="17" fill="#f7fbff" /><ellipse className="rig-pupil" cx="171" cy="237" rx="8" ry="10" fill="#172636" /><circle cx="174" cy="233" r="3" fill="white" />
-              <ellipse className="rig-eye right" cx="253" cy="234" rx="18" ry="17" fill="#f7fbff" /><ellipse className="rig-pupil" cx="257" cy="237" rx="8" ry="10" fill="#172636" /><circle cx="260" cy="233" r="3" fill="white" />
+              <ellipse className="rig-eye left" cx="167" cy="241" rx="17" ry="14" fill="#fffaf6" /><ellipse className="rig-pupil" cx="170" cy="242" rx="7" ry="9" fill="#2d2022" /><circle cx="173" cy="238" r="2.7" fill="white" />
+              <ellipse className="rig-eye right" cx="253" cy="241" rx="17" ry="14" fill="#fffaf6" /><ellipse className="rig-pupil" cx="256" cy="242" rx="7" ry="9" fill="#2d2022" /><circle cx="259" cy="238" r="2.7" fill="white" />
             </g>
-            <path className="rig-nose" d="M205 237q-3 48-20 65 21 13 42 0" fill="none" stroke="#a8635a" strokeWidth="5" strokeLinecap="round" />
-            <ellipse className="rig-mouth" cx="210" cy="335" rx="38" ry={8 + mouthOpen * 19} fill="#5a2931" stroke="#9a5556" strokeWidth="4" />
-            <path className="rig-mouth-line" d="M180 335q30 9 60 0" fill="none" stroke="#f19b9c" strokeWidth="4" strokeLinecap="round" opacity={speaking ? 0.85 : 0.4} />
-            <path className="rig-chin" d="M189 372q21 10 42 0" fill="none" stroke="#b97065" strokeWidth="4" strokeLinecap="round" opacity=".5" />
-            <circle className="rig-cheek left" cx="133" cy="308" r="17" fill="#e98f86" opacity=".16" /><circle className="rig-cheek right" cx="287" cy="308" r="17" fill="#e98f86" opacity=".16" />
+            <path className="rig-nose" d="M207 238q-3 48-18 69 21 13 42 0" fill="none" stroke="#a7615b" strokeWidth="5" strokeLinecap="round" />
+            <path d="M178 328q32-12 64 0" fill="none" stroke="#b66d69" strokeWidth="3" opacity=".52" />
+            <ellipse className="rig-mouth" cx="210" cy="340" rx="35" ry={7 + mouthOpen * 18} fill="#632d35" stroke="#9f5b5d" strokeWidth="3" />
+            <path className="rig-mouth-line" d="M180 339q30 8 60 0" fill="none" stroke="#efaaa5" strokeWidth="3" strokeLinecap="round" opacity={speaking ? .9 : .55} />
+            <path className="rig-lower-lip" d="M190 356q20 9 40 0" fill="none" stroke="#c87976" strokeWidth="3" opacity=".7" />
+            <path className="rig-chin" d="M188 382q22 10 44 0" fill="none" stroke="#a9635e" strokeWidth="3" opacity=".45" />
+            <ellipse className="rig-cheek left" cx="134" cy="312" rx="24" ry="13" fill="#e88982" opacity=".13" /><ellipse className="rig-cheek right" cx="286" cy="312" rx="24" ry="13" fill="#e88982" opacity=".13" />
           </g>
-          <path className="rig-logo" d="M283 532h35" stroke="#58bdf4" strokeWidth="3" strokeLinecap="round" /><text x="287" y="526" fill="#e6f5ff" fontSize="17" fontWeight="800">Mr.<tspan fill="#4eb8f2">A</tspan></text>
+          <path className="rig-logo" d="M284 536h35" stroke="#58bdf4" strokeWidth="3" strokeLinecap="round" /><text x="288" y="530" fill="#e6f5ff" fontSize="16" fontWeight="800">Mr.<tspan fill="#4eb8f2">A</tspan></text>
         </g>
       </svg>
       <span className="rig-expression-chip">{speaking ? "happy · talking" : `${expression} · ${gesture}`}</span>
