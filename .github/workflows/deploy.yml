@@ -28,7 +28,7 @@ jobs:
         run: |
           mkdir -p artifact
           cp index.html artifact/index.html
-          cp ai-character-myanmar-traditional.png artifact/ai-character-myanmar-traditional.png
+          cp mr-a-reference-character.png artifact/mr-a-reference-character.png
           cp -R assets artifact/assets
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Check, ChevronDown, Headphones, Keyboard, MessageCircle, Mic2, MoreHorizontal, PanelLeft, Send, Settings2, Sparkles, UserRound, Volume2, Waves, X, Zap } from "lucide-react";
 
-const characterImage = "/Mr.A/ai-character-myanmar-traditional.png";
+const characterImage = "/Mr.A/mr-a-reference-character.png";
 const quickPrompts = ["မိတ်ဆက်ပေးပါ", "ဒီနေ့ ဘာလုပ်ရမလဲ?", "Website အကြောင်းပြောပါ"];
 const starterMessages = [
   { from: "ai", text: "မင်္ဂလာပါ။ ကျွန်တော်က Mr.A ပါ။ ဒီနေ့ ဘာကူညီပေးရမလဲ?" },
